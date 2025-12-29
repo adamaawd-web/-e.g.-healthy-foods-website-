@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello World!</h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
+</html> <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Healthy Foods & Recipes</title>
+<style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f2f8f2; color:#333; }
+    header { background:#4CAF50; color:white; padding:20px; text-align:center; }
+    nav { background:#2e7d32; display:flex; justify-content:space-around; flex-wrap:wrap; padding:10px 0; align-items:center; }
+    nav a { color:white; text-decoration:none; font-weight:bold; margin:5px; }
+    nav a:hover { text-decoration:underline; }
+    nav input[type="text"] { padding:5px; border-radius:5px; border:none; width:200px; margin:5px; }
+    .container { max-width:1000px; margin:auto; padding:20px; }
+    section { margin-bottom:40px; }
+    section h2 { color:#2e7d32; margin-bottom:15px; }
+    ul { list-style-type:square; padding-left:20px; }
+    .food-card, .recipe-card { background:white; padding:15px; margin-bottom:15px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    footer { background:#4CAF50; color:white; text-align:center; padding:15px 0; }
+</style>
+<script>
+function searchFood() {
+    let input = document.getElementById('searchBox').value.toLowerCase();
+    let cards = document.querySelectorAll('.food-card, .recipe-card');
+    cards.forEach(card => {
+        let text = card.textContent.toLowerCase();
+        card.style.display = text.includes(input) ? 'block' : 'none';
+    });
+}
+</script>
+</head>
+<body>
+
+<header>
+    <h1>Healthy Foods & Recipes</h1>
+    <p>Explore nutritious foods and make even junk food healthy!</p>
+</header>
+
+<nav>
+    <a href="#vegetables">Vegetables</a>
+    <a href="#fruits">Fruits</a>
+    <a href="#grains">Grains & Legumes</a>
+    <a href="#protein">Protein</a>
+    <a href="#junk">Healthy Junk Food</a>
+    <a href="#meals">Meal Ideas</a>
+    <input type="text" id="searchBox" placeholder="Search foods or recipes..." onkeyup="searchFood()">
+</nav>
+
+<div class="container">
+
+<!-- Vegetables -->
+<section id="vegetables">
+    <h2>Vegetables</h2>
+    <div class="food-card">
+        <ul>
+            <li>Kale</li>
+            <li>Spinach (fresh or frozen)</li>
+            <li>Broccoli</li>
+            <li>Brussels sprouts</li>
+            <li>Carrots</li>
+            <li>Beets (root and greens)</li>
+            <li>Cauliflower</li>
+            <li>Zucchini (summer squash)</li>
+            <li>Butternut squash (winter squash)</li>
+            <li>Peppers (bell peppers, jalapenos, cayenne)</li>
+            <li>Tomatoes (red and green)</li>
+            <li>Eggplant</li>
+            <li>Green beans</li>
+            <li>Peas (podded and split)</li>
+            <li>Asparagus</li>
+            <li>Cabbage (including Chinese cabbage/bok choy)</li>
+            <li>Arugula (rocket)</li>
+            <li>Swiss chard</li>
+            <li>Cucumbers (and pickles)</li>
+            <li>Leeks</li>
+            <li>Burdock root</li>
+            <li>Water chestnuts</li>
+            <li>Pumpkin</li>
+            <li>Sweet potato</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Fruits -->
+<section id="fruits">
+    <h2>Fruits</h2>
+    <div class="food-card">
+        <ul>
+            <li>Berries (blueberries, raspberries, strawberries, blackberries, red currants)</li>
+            <li>Apples</li>
+            <li>Citrus fruits (oranges, lemons, limes, grapefruit, kumquats)</li>
+            <li>Pears</li>
+            <li>Bananas and plantains</li>
+            <li>Mangoes</li>
+            <li>Pineapple</li>
+            <li>Melons (watermelon, cantaloupe)</li>
+            <li>Grapes</li>
+            <li>Kiwi</li>
+            <li>Avocado</li>
+            <li>Papaya</li>
+            <li>Pomegranate</li>
+            <li>Figs</li>
+            <li>Stone fruits (cherries, plums, peaches, apricots)</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Whole Grains & Legumes -->
+<section id="grains">
+    <h2>Whole Grains & Legumes</h2>
+    <div class="food-card">
+        <ul>
+            <li>Whole grains: oats, brown rice, barley, quinoa, buckwheat, whole wheat pasta, millet, amaranth, bulgur, spelt</li>
+            <li>Legumes: lentils, chickpeas, black beans, kidney beans, navy beans, lima beans, edamame</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Protein -->
+<section id="protein">
+    <h2>Protein</h2>
+    <div class="food-card">
+        <ul>
+            <li>Nuts: almonds, walnuts</li>
+            <li>Seeds: chia, hemp, flaxseeds, pumpkin, sunflower</li>
+            <li>Nut and seed butters: peanut butter, tahini</li>
+            <li>Fatty fish: salmon, sardines, mackerel, tuna, herring</li>
+            <li>Eggs</li>
+            <li>Lean meats: chicken, turkey, grass-fed beef</li>
+            <li>Dairy and fermented dairy: Greek yogurt, cottage cheese, kefir</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Healthy Junk Food Recipes -->
+<section id="junk">
+    <h2>Healthy Junk Food Recipes</h2>
+    <div class="recipe-card">
+        <h3>Healthy Burger</h3>
+        <p>Whole wheat buns, lean patty, fresh veggies, low-fat sauces. Grill or bake.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Healthy Fries</h3>
+        <p>Bake sweet potato or potato fries with herbs instead of oil.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Healthy Pizza</h3>
+        <p>Whole grain base, tomato sauce, veggies, low-fat cheese, lean protein optional.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Healthy Snacks</h3>
+        <p>Baked veggie chips, air-popped popcorn, fruit-based treats.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Healthy Sweets</h3>
+        <p>Frozen yogurt, banana ice cream, baked donuts/cakes, minimal sugar.</p>
+    </div>
+</section>
+
+<!-- Meal Ideas -->
+<section id="meals">
+    <h2>Meal Ideas & Inspiration</h2>
+    <div class="recipe-card">
+        <h3>Spinach Pesto Pasta with Broccoli Rabe and Beans</h3>
+        <p>Whole-wheat pasta, fresh spinach pesto, white beans, broccoli rabe.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Coconut Milk Poached Chicken with Quinoa</h3>
+        <p>Chicken thighs poached in coconut milk with quinoa and broccolini.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Healthy Tuna Grain Bowl</h3>
+        <p>Turmeric roasted sweet potatoes, spicy yogurt dressing, tuna over brown rice.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Salmon Pesto Traybake with Baby Roast Potatoes</h3>
+        <p>Salmon baked with pesto, courgettes, and peppers.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Double Bean & Roasted Red Pepper Chilli</h3>
+        <p>Low-fat vegetarian chilli, great for meal prep and freezing.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Chicken & Veg Bowls</h3>
+        <p>Hoisin-fried chicken, avocado, edamame, carrots over brown rice.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Moroccan-style Chickpea Soup</h3>
+        <p>Fiber-rich vegetarian soup flavored with cumin.</p>
+    </div>
+    <div class="recipe-card">
+        <h3>Prawn & Harissa Spaghetti</h3>
+        <p>Quick spaghetti with king prawns and zesty harissa dressing.</p>
+    </div>
+</section>
+
+</div>
+
+<footer>
+    <p>© 2025 Healthy Foods | Eat smart, live healthy</p>
+</footer>
+
+</body>
+</html>
+<style>
+    body { 
+        font-family: Arial, sans-serif; 
+        margin:0; 
+        background:#f2f8f2; 
+        color:#333; 
+        font-size:26px; /* Set all text to 26px */
+    }
+    header { 
+        background:#4CAF50; 
+        color:white; 
+        padding:20px; 
+        text-align:center; 
+    }
+    header h1 { 
+        margin:0; 
+        font-size:34px; /* Slightly larger for title */
+    }
+    nav { 
+        background:#2e7d32; 
+        display:flex; 
+        justify-content:space-around; 
+        flex-wrap:wrap; 
+        padding:10px 0; 
+        align-items:center; 
+    }
+    nav a { 
+        color:white; 
+        text-decoration:none; 
+        font-weight:bold; 
+        margin:5px; 
+        font-size:26px; /* Match body font size */
+    }
+    nav a:hover { text-decoration:underline; }
+    nav input[type="text"] { 
+        padding:5px; 
+        border-radius:5px; 
+        border:none; 
+        width:200px; 
+        margin:5px; 
+        font-size:26px; 
+    }
+    .container { max-width:1000px; margin:auto; padding:20px; }
+    section { margin-bottom:40px; }
+    section h2 { color:#2e7d32; margin-bottom:15px; font-size:30px; } /* Slightly larger */
+    ul { list-style-type:square; padding-left:20px; }
+    .food-card, .recipe-card { background:white; padding:15px; margin-bottom:15px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    footer { background:#4CAF50; color:white; text-align:center; padding:15px 0; font-size:26px; }
+</style>
