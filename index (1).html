@@ -1,8 +1,3 @@
-I will update the main menu display so that instead of one long list, the food items are organized into distinct categorized sections with big subheadings right in the middle of the page (such as **🥩 Mains & Steaks**, **⚡ Quick 5-Min Foods**, **🍩 Sweet Desserts**, and **🥤 Drinks & Shakes**), making it super easy to browse each food type!
-
-Here is the updated single-file web application:
-
-```html
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -39,14 +34,14 @@ Here is the updated single-file web application:
                 <div class="bg-emerald-500 text-slate-950 p-2 rounded-xl font-black text-xl">🥗</div>
                 <div>
                     <span class="text-xl font-black bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">NutriChef</span>
-                    <span class="block text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Healthy Remakes & AI Scan</span>
+                    <span class="block text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Healthy Remakes & Recipes</span>
                 </div>
             </div>
             
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <a href="#camera" class="hover:text-emerald-400 transition-colors">Food Camera</a>
                 <a href="#menu" class="hover:text-emerald-400 transition-colors">Menu & Recipes</a>
                 <a href="#remakes" class="hover:text-emerald-400 transition-colors">Junk vs Healthy</a>
-                <a href="#scanner" class="hover:text-emerald-400 transition-colors flex items-center gap-1">📸 AI Camera Scanner</a>
                 <a href="#diet-plans" class="hover:text-emerald-400 transition-colors">Age Diets (8+)</a>
             </nav>
 
@@ -78,42 +73,48 @@ Here is the updated single-file web application:
         </div>
     </section>
 
-    <!-- AI Camera Scanner Section -->
-    <section id="scanner" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="bg-gradient-to-br from-slate-900 to-slate-900/90 border border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Gemini AI + Live Web Lookup · v2</span>
-                    <h2 class="text-2xl sm:text-3xl font-black mt-2 mb-2">📸 Instant Food Camera Scanner</h2>
-                    <p class="text-slate-400 text-sm max-w-lg">
-                        Snap a photo or upload an image of any meal to identify it with AI, then look up its real calories, protein, fat, carbs, and sugar on the web!
-                    </p>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                    <label class="cursor-pointer bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-6 py-3 rounded-xl text-sm transition text-center shadow-lg shadow-emerald-500/20">
-                        📷 Take / Upload Photo
-                        <input type="file" accept="image/*" capture="environment" onchange="handleImageScan(event)" class="hidden">
-                    </label>
-                </div>
+    <!-- Camera capture: uses the user's supplied getUserMedia approach -->
+    <section id="camera" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-xl">
+            <div class="text-center mb-5">
+                <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider">Camera</span>
+                <h2 class="text-2xl font-black mt-2">📷 Take a Food Photo</h2>
+                <p class="text-slate-400 text-sm mt-2">Start the camera, point it at your plate, then capture a photo.</p>
             </div>
-            
-            <!-- Scan Result Display -->
-            <div id="scanResultContainer" class="hidden mt-6 pt-6 border-t border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <div id="scanPreviewBox" class="rounded-xl overflow-hidden h-36 bg-slate-950 border border-slate-800 flex items-center justify-center">
-                    <span class="text-xs text-slate-500">No Image</span>
+            <div class="max-w-2xl mx-auto">
+                <video id="videoElement" autoplay playsinline muted class="w-full rounded-2xl bg-slate-950 aspect-video object-cover border border-slate-700"></video>
+                <canvas id="canvasElement" class="hidden"></canvas>
+                <div class="flex flex-wrap justify-center gap-3 mt-4">
+                    <button id="startCameraButton" type="button" onclick="startCamera()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-5 py-3 rounded-xl">Start camera</button>
+                    <button id="captureCameraButton" type="button" onclick="captureImage()" disabled class="bg-cyan-500 hover:bg-cyan-600 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold px-5 py-3 rounded-xl">Capture photo</button>
+                    <button id="analyzeFoodButton" type="button" onclick="analyzeFoodPhoto()" disabled class="bg-emerald-400 hover:bg-emerald-300 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold px-5 py-3 rounded-xl">Analyze all foods</button>
+                    <button id="stopCameraButton" type="button" onclick="stopCamera()" disabled class="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-white font-bold px-5 py-3 rounded-xl">Stop camera</button>
                 </div>
-                <div id="scanOutputBox" class="md:col-span-2 text-sm text-slate-300">
-                    <div class="animate-pulse flex space-x-4">
-                        <div class="flex-1 space-y-4 py-1">
-                            <div class="h-4 bg-slate-800 rounded w-3/4"></div>
-                            <div class="space-y-2">
-                                <div class="h-4 bg-slate-800 rounded"></div>
-                                <div class="h-4 bg-slate-800 rounded w-5/6"></div>
-                            </div>
-                        </div>
+                <p id="cameraStatus" role="status" class="text-center text-sm text-slate-400 mt-3">Camera is off. Press “Start camera” to allow access.</p>
+
+                <!-- Optional portion details: these fields never block photo capture. -->
+                <details id="portionOptions" class="mt-5 rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
+                    <summary class="cursor-pointer select-none font-bold text-emerald-300">⚖️ Optional portion details</summary>
+                    <p class="text-xs text-slate-400 mt-2">You can leave these blank. Add a weight or quantity if you know it to help improve the estimate.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                        <label class="block text-sm text-slate-300">Weight (grams) — optional
+                            <input id="foodWeightGrams" type="number" min="1" max="10000" step="1" inputmode="numeric" placeholder="e.g. 150" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                        </label>
+                        <label class="block text-sm text-slate-300">How many pieces / items? — optional
+                            <input id="foodItemCount" type="number" min="1" max="500" step="1" inputmode="numeric" placeholder="e.g. 2 eggs" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                        </label>
                     </div>
+                    <label class="block text-sm text-slate-300 mt-3">Food description (optional)
+                        <input id="foodPortionNote" type="text" maxlength="120" placeholder="e.g. grilled chicken, rice and vegetables" class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                    </label>
+                    <button type="button" onclick="clearPortionDetails()" class="mt-3 text-xs font-semibold text-slate-400 hover:text-white underline">Clear optional details</button>
+                </details>
+
+                <div id="capturedPhotoWrap" class="hidden mt-6">
+                    <h3 class="font-bold text-emerald-400 mb-2">Captured photo</h3>
+                    <img id="capturedPhoto" alt="Captured food photo" class="w-full rounded-2xl border border-slate-700" />
                 </div>
+                <div id="foodAnalysisResults" class="hidden mt-6 rounded-2xl border border-slate-700 bg-slate-950 p-4" aria-live="polite"></div>
             </div>
         </div>
     </section>
@@ -721,220 +722,209 @@ Here is the updated single-file web application:
             `;
         }
 
-        // AI Camera Scanner v2: identify food -> search the web -> editable portions
-        const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-        let scanItems = [];
 
-        function lsGet(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
-        function lsSet(k, v) { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) {} }
-        function resetGeminiKey() { lsSet('gemini_key', ''); lsSet('gemini_model', ''); alert('API key cleared. You will be asked again on the next scan.'); }
-        function getGeminiKey() {
-            let key = lsGet('gemini_key');
-            if (!key) {
-                key = (prompt('Paste your Gemini API key (free at aistudio.google.com):') || '').trim();
-                lsSet('gemini_key', key);
-            }
-            return key;
-        }
-        function esc(t) {
-            return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        }
-        function numOrNull(v) { return (v === null || v === undefined || v === '' || isNaN(Number(v))) ? null : Number(v); }
+        // Camera controls based on the supplied getUserMedia + canvas capture code.
+        let foodCameraStream = null;
 
-        function resizeToBase64(dataUrl, maxSide = 1280) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => {
-                    const k = Math.min(1, maxSide / Math.max(img.width, img.height));
-                    const c = document.createElement('canvas');
-                    c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
-                    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-                    resolve(c.toDataURL('image/jpeg', 0.88).split(',')[1]);
-                };
-                img.onerror = reject;
-                img.src = dataUrl;
-            });
-        }
-
-        // Picks the newest stable Gemini Flash model on your key, so model renames never break the scanner
-        async function getModel(key) {
-            let m = lsGet('gemini_model');
-            if (m) return m;
-            const r = await fetch(`${GEMINI_BASE}/models?pageSize=200`, { headers: { 'x-goog-api-key': key } });
-            if (!r.ok) {
-                if (r.status === 400 || r.status === 403) lsSet('gemini_key', '');
-                throw new Error(`Couldn't reach Gemini (${r.status}). Check your API key.`);
-            }
-            const d = await r.json();
-            const names = (d.models || [])
-                .filter(x => /^models\/gemini-[\d.]+-flash$/.test(x.name) && (x.supportedGenerationMethods || []).includes('generateContent'))
-                .map(x => x.name.replace('models/', ''))
-                .sort((a, b) => parseFloat(b.split('-')[1]) - parseFloat(a.split('-')[1]));
-            m = names[0] || 'gemini-2.5-flash';
-            lsSet('gemini_model', m);
-            return m;
-        }
-
-        async function callGemini(body, retry = true) {
-            const key = getGeminiKey();
-            if (!key) throw new Error('No API key provided.');
-            const model = await getModel(key);
-            const res = await fetch(`${GEMINI_BASE}/models/${model}:generateContent`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-                body: JSON.stringify(body)
-            });
-            if (res.status === 404 && retry) { lsSet('gemini_model', ''); return callGemini(body, false); }
-            if (!res.ok) {
-                if (res.status === 403) lsSet('gemini_key', '');
-                throw new Error(`Gemini request failed (${res.status}).`);
-            }
-            return res.json();
-        }
-
-        const textOf = d => (d.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
-        function parseJSON(t) {
-            const a = t.indexOf('{'), b = t.lastIndexOf('}');
-            if (a < 0 || b < a) throw new Error('Unreadable AI response.');
-            return JSON.parse(t.slice(a, b + 1));
-        }
-
-        const ID_PROMPT = `Identify every distinct food or drink in this photo (max 6). For each give:
-- name, brand (or ""), kind: "packaged" | "prepared" | "fresh"
-- portion_text: what is visible, e.g. "1 bag (about 5 servings)" or "1 plate"
-- portion_grams: total grams (or ml) of that item visible, best estimate
-- label: values printed on a VISIBLE Nutrition Facts label {serving_size_text, serving_grams, calories, protein_g, fat_g, carbs_g, sugar_g}, otherwise null
-- estimate: your own nutrition estimate for the visible portion {calories, protein_g, fat_g, carbs_g, sugar_g}. Be realistic: candy and sweets have almost no protein (1-3 g per serving).
-- search_query: a precise web query for its nutrition facts including brand, variety and pack size.
-If there is no food, return an empty items list. JSON only: {"items":[...]}`;
-
-        async function identifyFood(b64) {
-            const d = await callGemini({
-                contents: [{ parts: [{ text: ID_PROMPT }, { inline_data: { mime_type: 'image/jpeg', data: b64 } }] }],
-                generationConfig: { responseMimeType: 'application/json', temperature: 0.1 }
-            });
-            return parseJSON(textOf(d));
-        }
-
-        // Google Search grounding: Gemini searches live websites and we show the sources
-        async function lookupNutrition(q) {
-            const d = await callGemini({
-                contents: [{ parts: [{ text: `Search the web for the nutrition facts of: "${q}". Prefer the manufacturer's website, USDA FoodData Central or other official nutrition databases, and confirm against a second source. Return ONLY JSON: {"matched_product":"","serving_text":"","serving_grams":0,"calories":0,"protein_g":0,"fat_g":0,"carbs_g":0,"sugar_g":0}. Values are per ONE serving exactly as listed by the source. Use null for anything you cannot find.` }] }],
-                tools: [{ google_search: {} }],
-                generationConfig: { temperature: 0 }
-            });
-            const srcs = (d.candidates?.[0]?.groundingMetadata?.groundingChunks || []).map(c => c.web).filter(Boolean);
-            return { info: parseJSON(textOf(d)), srcs };
-        }
-
-        async function buildItem(it) {
-            const mk = o => ({ cal: numOrNull(o?.calories), p: numOrNull(o?.protein_g), f: numOrNull(o?.fat_g), c: numOrNull(o?.carbs_g), s: numOrNull(o?.sugar_g) });
-            const item = { name: it.name || 'Food', brand: it.brand || '', sources: [], matched: '' };
-            let per = null, servG = null;
-            const L = it.label;
-            if (L && numOrNull(L.calories) !== null && numOrNull(L.protein_g) !== null) {
-                per = mk(L); servG = numOrNull(L.serving_grams); item.serving = L.serving_size_text || '1 serving'; item.kind = 'label';
-            } else {
-                try {
-                    const r = await lookupNutrition(it.search_query || `${it.brand || ''} ${it.name}`);
-                    const m = mk(r.info);
-                    if (m.cal !== null && m.p !== null) {
-                        per = m; servG = numOrNull(r.info.serving_grams); item.serving = r.info.serving_text || '1 serving';
-                        item.matched = r.info.matched_product || ''; item.sources = r.srcs; item.kind = 'web';
-                    }
-                } catch (e) {}
-            }
-            if (!per) { per = mk(it.estimate); servG = null; item.serving = it.portion_text || 'visible portion'; item.kind = 'estimate'; }
-            const pg = numOrNull(it.portion_grams);
-            item.servings = (servG && pg && item.kind !== 'estimate') ? Math.min(20, Math.max(0.5, Math.round(pg / servG * 2) / 2)) : 1;
-            item.per = { cal: per.cal || 0, p: per.p || 0, f: per.f || 0, c: per.c || 0, s: per.s || 0 };
-            const kc = 4 * item.per.p + 4 * item.per.c + 9 * item.per.f;
-            item.warn = (item.per.cal >= 30 && Math.abs(kc - item.per.cal) / item.per.cal > 0.4) || item.per.s > item.per.c + 0.5;
-            return item;
-        }
-
-        const fmt = v => v >= 10 ? Math.round(v) : Math.round(v * 10) / 10;
-        function tiles(v) {
-            const t = (l, val, u, col) => `<div class="bg-slate-900 p-2 rounded-xl border border-slate-800"><span class="block text-[10px] text-slate-500 uppercase">${l}</span><strong class="text-xs text-${col}-400">${fmt(val)}${u}</strong></div>`;
-            return `<div class="grid grid-cols-5 gap-2 text-center">${t('Cals', v.cal, ' kcal', 'emerald')}${t('Protein', v.p, 'g', 'emerald')}${t('Fat', v.f, 'g', 'amber')}${t('Carbs', v.c, 'g', 'cyan')}${t('Sugar', v.s, 'g', 'rose')}</div>`;
-        }
-        function scaled(it) { const k = it.servings; return { cal: it.per.cal * k, p: it.per.p * k, f: it.per.f * k, c: it.per.c * k, s: it.per.s * k }; }
-        function adjustServings(i, d) { scanItems[i].servings = Math.min(50, Math.max(0.5, scanItems[i].servings + d)); renderScan(); }
-
-        function renderScan() {
-            const out = document.getElementById('scanOutputBox');
-            const badge = { label: ['📋 Read from package label', 'emerald'], web: ['🌐 Verified from web sources', 'emerald'], estimate: ['⚠️ AI estimate (no web match)', 'amber'] };
-            const cards = scanItems.map((it, i) => {
-                const [bt, bc] = badge[it.kind];
-                return `
-                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
-                    <div class="flex items-start justify-between gap-2">
-                        <div>
-                            <div class="font-black text-emerald-400 text-sm">${esc(it.name)}${it.brand ? ' · ' + esc(it.brand) : ''}</div>
-                            ${it.matched ? `<div class="text-[11px] text-slate-500">Matched: ${esc(it.matched)}</div>` : ''}
-                        </div>
-                        <span class="bg-${bc}-500/20 text-${bc}-400 text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap">${bt}</span>
-                    </div>
-                    <div class="flex items-center justify-between gap-2 text-xs text-slate-300">
-                        <span>1 serving = ${esc(it.serving)}</span>
-                        <span class="flex items-center gap-2 whitespace-nowrap">
-                            <button onclick="adjustServings(${i},-0.5)" class="w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 font-bold">−</button>
-                            <strong class="text-slate-100">${it.servings} serving${it.servings === 1 ? '' : 's'}</strong>
-                            <button onclick="adjustServings(${i},0.5)" class="w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 font-bold">+</button>
-                        </span>
-                    </div>
-                    ${tiles(scaled(it))}
-                    ${it.warn ? '<p class="text-[11px] text-amber-400">⚠️ These numbers don\'t add up cleanly, treat them as approximate.</p>' : ''}
-                </div>`;
-            }).join('');
-
-            const total = scanItems.reduce((a, it) => { const v = scaled(it); for (const k in v) a[k] = (a[k] || 0) + v[k]; return a; }, { cal: 0, p: 0, f: 0, c: 0, s: 0 });
-            const totalBox = scanItems.length > 1 ? `<div class="bg-slate-900 p-4 rounded-2xl border border-emerald-500/30 space-y-2"><div class="text-xs font-black text-slate-100 uppercase tracking-wider">Meal total</div>${tiles(total)}</div>` : '';
-
-            const seen = new Set(), links = [];
-            scanItems.flatMap(it => it.sources).forEach(s => {
-                const key = s.title || s.uri;
-                if (s.uri && /^https?:\/\//.test(s.uri) && !seen.has(key)) { seen.add(key); links.push(s); }
-            });
-            const srcBox = links.length ? `<p class="text-[11px] text-slate-400">Sources: ${links.slice(0, 6).map(s => `<a href="${esc(s.uri)}" target="_blank" rel="noopener noreferrer" class="underline hover:text-emerald-300">${esc(s.title || 'source')}</a>`).join(' · ')}</p>` : '';
-
-            out.innerHTML = `<div class="space-y-3">${cards}${totalBox}${srcBox}
-                <p class="text-[10px] text-slate-500">Scanner v2. Portion size is the biggest source of error, so adjust the servings with + and − to match what you actually ate. <button onclick="resetGeminiKey()" class="underline">Change API key</button></p></div>`;
-        }
-
-        function handleImageScan(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async function (e) {
-                const container = document.getElementById('scanResultContainer');
-                const previewBox = document.getElementById('scanPreviewBox');
-                const outputBox = document.getElementById('scanOutputBox');
-                container.classList.remove('hidden');
-                previewBox.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
-                const status = t => { outputBox.innerHTML = `<div class="space-y-2 animate-pulse"><div class="text-emerald-400 font-bold text-sm">🤖 ${t}</div><div class="text-xs text-slate-400">Identify the food, then search the web for its real nutrition facts</div></div>`; };
-                try {
-                    status('Identifying the food...');
-                    const found = await identifyFood(await resizeToBase64(e.target.result));
-                    const items = (found.items || []).slice(0, 6);
-                    if (!items.length) throw new Error("I couldn't spot any food in this photo.");
-                    status(`Searching the web for nutrition facts (${items.length} item${items.length > 1 ? 's' : ''})...`);
-                    scanItems = await Promise.all(items.map(buildItem));
-                    renderScan();
-                } catch (err) {
-                    outputBox.innerHTML = `<div class="bg-slate-950 p-4 rounded-2xl border border-rose-500/30 text-xs text-rose-400">Couldn't analyze this photo. ${esc(err.message)} Try again with a clearer picture.</div>`;
+        async function startCamera() {
+            const video = document.getElementById('videoElement');
+            const status = document.getElementById('cameraStatus');
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Camera access is unavailable. Use HTTPS or localhost in a supported browser.');
                 }
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
+                stopCamera();
+                // Prefer the rear camera on phones; use an ideal constraint for desktop compatibility.
+                try {
+                    foodCameraStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: { exact: 'environment' } }, audio: false
+                    });
+                } catch (rearCameraError) {
+                    foodCameraStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: { ideal: 'environment' } }, audio: false
+                    });
+                }
+                video.srcObject = foodCameraStream;
+                await video.play();
+                document.getElementById('captureCameraButton').disabled = false;
+                document.getElementById('stopCameraButton').disabled = false;
+                status.textContent = 'Camera is on. Position your plate and press Capture photo.';
+            } catch (err) {
+                console.error('Camera access error:', err);
+                status.textContent = `Could not open camera: ${err.message || 'Permission denied.'}`;
+            }
         }
 
-        // Initial Renders on Load
-        window.onload = function() {
-            renderMenu();
-            renderRemakes();
-            selectAgeGroup('kids');
-        };
+        function captureImage() {
+            const video = document.getElementById('videoElement');
+            const canvas = document.getElementById('canvasElement');
+            const status = document.getElementById('cameraStatus');
+            if (!foodCameraStream || !video.videoWidth || !video.videoHeight) {
+                status.textContent = 'Start the camera and wait for the preview before capturing.';
+                return null;
+            }
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+            document.getElementById('capturedPhoto').src = imageDataUrl;
+            document.getElementById('capturedPhotoWrap').classList.remove('hidden');
+            const portionDetails = getOptionalPortionDetails();
+            document.getElementById('analyzeFoodButton').disabled = false;
+            document.getElementById('foodAnalysisResults').classList.add('hidden');
+            const detailSummary = [];
+            if (portionDetails.weightGrams) detailSummary.push(`${portionDetails.weightGrams} g`);
+            if (portionDetails.itemCount) detailSummary.push(`${portionDetails.itemCount} item(s)`);
+            if (portionDetails.description) detailSummary.push(portionDetails.description);
+            status.textContent = detailSummary.length
+                ? `Photo captured. Optional portion details: ${detailSummary.join(' · ')}. Food recognition and nutrition lookup still need to be connected.`
+                : 'Photo captured. No portion details added. Food recognition and nutrition lookup still need to be connected.';
+            // Keep the captured image and optional user-entered portion data together for a future scanner API.
+            window.lastFoodCapture = { imageDataUrl, portionDetails, capturedAt: new Date().toISOString() };
+            return imageDataUrl;
+        }
+
+        // The browser sends the photo to your own secure backend. The backend must
+        // identify every food and retrieve nutrition data from a trusted database.
+        // Do not put Gemini, Edamam, USDA, or other secret API keys in this HTML file.
+        async function analyzeFoodPhoto() {
+            const button = document.getElementById('analyzeFoodButton');
+            const results = document.getElementById('foodAnalysisResults');
+            const capture = window.lastFoodCapture;
+            if (!capture?.imageDataUrl) {
+                document.getElementById('cameraStatus').textContent = 'Capture a photo first.';
+                return;
+            }
+            button.disabled = true;
+            button.textContent = 'Analyzing…';
+            results.classList.remove('hidden');
+            results.textContent = 'Checking the photo for all visible foods and looking up nutrition information…';
+            try {
+                const response = await fetch('/api/analyze-food', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        imageDataUrl: capture.imageDataUrl,
+                        portionDetails: capture.portionDetails
+                    })
+                });
+                if (!response.ok) {
+                    const message = await response.text();
+                    throw new Error(message || `Scanner service returned ${response.status}.`);
+                }
+                const data = await response.json();
+                if (!Array.isArray(data.items) || data.items.length === 0) {
+                    throw new Error('No foods were identified. Try a clearer photo with the whole plate visible.');
+                }
+                renderFoodAnalysis(data.items);
+                document.getElementById('cameraStatus').textContent = `Found ${data.items.length} food item(s). Check the portions and results below.`;
+            } catch (error) {
+                console.error('Food analysis error:', error);
+                results.textContent = `Food analysis is not connected yet: ${error.message}. The camera and optional portion fields work, but a secure /api/analyze-food backend must be added before the photo can be identified and nutrition looked up. No nutrition values have been guessed.`;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Analyze all foods';
+            }
+        }
+
+        function renderFoodAnalysis(items) {
+            const root = document.getElementById('foodAnalysisResults');
+            root.replaceChildren();
+            const heading = document.createElement('h3');
+            heading.className = 'text-lg font-black text-emerald-400 mb-3';
+            heading.textContent = 'Foods detected';
+            root.appendChild(heading);
+            const cards = document.createElement('div');
+            cards.className = 'space-y-3';
+            let totals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+            items.forEach((item, index) => {
+                const grams = Number(item.grams) || 0;
+                const per100 = item.per100g || null;
+                const multiplier = grams > 0 && per100 ? grams / 100 : 1;
+                const nutrition = {
+                    calories: Number(per100?.calories ?? item.calories) * multiplier,
+                    protein: Number(per100?.protein ?? item.protein) * multiplier,
+                    carbs: Number(per100?.carbs ?? item.carbs) * multiplier,
+                    fat: Number(per100?.fat ?? item.fat) * multiplier
+                };
+                Object.keys(totals).forEach(k => { totals[k] += Number.isFinite(nutrition[k]) ? nutrition[k] : 0; });
+                const card = document.createElement('div');
+                card.className = 'rounded-xl border border-slate-700 bg-slate-900 p-4';
+                const name = document.createElement('div');
+                name.className = 'font-bold text-white';
+                name.textContent = item.name || `Food ${index + 1}`;
+                const portion = document.createElement('p');
+                portion.className = 'text-xs text-slate-400 mt-1';
+                portion.textContent = `${item.quantity || 'Portion not specified'}${grams ? ` · ${grams} g` : ''}`;
+                const macros = document.createElement('p');
+                macros.className = 'text-sm text-slate-200 mt-2';
+                macros.textContent = `${fmt(nutrition.calories)} kcal · Protein ${fmt(nutrition.protein)} g · Carbs ${fmt(nutrition.carbs)} g · Fat ${fmt(nutrition.fat)} g`;
+                card.append(name, portion, macros);
+                if (item.source) {
+                    const source = document.createElement(item.sourceUrl ? 'a' : 'p');
+                    source.className = 'text-xs text-emerald-300 mt-2 inline-block';
+                    source.textContent = `Nutrition source: ${item.source}`;
+                    if (item.sourceUrl) { source.href = item.sourceUrl; source.target = '_blank'; source.rel = 'noopener noreferrer'; }
+                    card.appendChild(source);
+                }
+                cards.appendChild(card);
+            });
+            root.appendChild(cards);
+            const total = document.createElement('div');
+            total.className = 'mt-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4';
+            const totalTitle = document.createElement('h4');
+            totalTitle.className = 'font-black text-emerald-300';
+            totalTitle.textContent = 'Whole plate total';
+            const totalText = document.createElement('p');
+            totalText.className = 'text-sm text-white mt-2';
+            totalText.textContent = `${fmt(totals.calories)} kcal · Protein ${fmt(totals.protein)} g · Carbs ${fmt(totals.carbs)} g · Fat ${fmt(totals.fat)} g`;
+            total.append(totalTitle, totalText);
+            root.appendChild(total);
+            const note = document.createElement('p');
+            note.className = 'text-xs text-slate-400 mt-3';
+            note.textContent = 'Photo-based portions are estimates. Confirm each food and its weight for a more reliable total.';
+            root.appendChild(note);
+        }
+
+        function fmt(value) {
+            return Number.isFinite(value) ? (Math.round(value * 10) / 10).toString() : '—';
+        }
+
+        function getOptionalPortionDetails() {
+            const weightRaw = document.getElementById('foodWeightGrams')?.value.trim() || '';
+            const countRaw = document.getElementById('foodItemCount')?.value.trim() || '';
+            return {
+                weightGrams: weightRaw && Number(weightRaw) > 0 ? Number(weightRaw) : null,
+                itemCount: countRaw && Number(countRaw) > 0 ? Number(countRaw) : null,
+                description: document.getElementById('foodPortionNote')?.value.trim() || ''
+            };
+        }
+
+        function clearPortionDetails() {
+            document.getElementById('foodWeightGrams').value = '';
+            document.getElementById('foodItemCount').value = '';
+            document.getElementById('foodPortionNote').value = '';
+        }
+
+        function stopCamera() {
+            if (foodCameraStream) {
+                foodCameraStream.getTracks().forEach(track => track.stop());
+                foodCameraStream = null;
+            }
+            const video = document.getElementById('videoElement');
+            if (video) video.srcObject = null;
+            const captureButton = document.getElementById('captureCameraButton');
+            const stopButton = document.getElementById('stopCameraButton');
+            if (captureButton) captureButton.disabled = true;
+            if (stopButton) stopButton.disabled = true;
+            const status = document.getElementById('cameraStatus');
+            if (status) status.textContent = 'Camera is off.';
+        }
+
+        window.addEventListener('pagehide', stopCamera);
+
+
     </script>
 </body>
 </html>
